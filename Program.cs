@@ -12,99 +12,151 @@ namespace HRMANAGEMENT
     {
         static void Main(string[] args)
         {
-           
-            string user_name;
-            int password;
 
-            Console.WriteLine("------------WELCOME TO HR MANAGMENET SYSTEM-----------");
+            string user_name;
+           // Console.ForegroundColor = ConsoleColor.White;
+           // Console.BackgroundColor = ConsoleColor.Red;
+            //ConsoleColor foreground = Console.ForegroundColor; 
+            Console.WriteLine("\n------------WELCOME TO HR MANAGMENET SYSTEM-----------");
             while (true)
             {
+                SqlConnection con = new SqlConnection();
+                con.ConnectionString = "Data Source=RAHUL;Initial Catalog=HRmangment; Integrated Security =true";
+                con.Open();
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "LoginPro";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Connection = con;
                 Console.WriteLine("\nEnter The User_Name  :");
                 user_name = Convert.ToString(Console.ReadLine());
                 Console.WriteLine("\nEnter The Password :");
-                password = Convert.ToInt32(Console.ReadLine());
-
-                if (user_name == "abc" && password == 123)
+                ConsoleKeyInfo key; string pass = "";
+                do
                 {
-                    Console.WriteLine("Your are logged successfully");
-                    break;
+                    key = Console.ReadKey(true);
+                    if (key.Key != ConsoleKey.Backspace)
+                    {
+                        pass += key.KeyChar;
+                        Console.Write("*");
+                    }
+                } while (key.Key != ConsoleKey.Enter);
+                cmd.Parameters.AddWithValue("user_name", user_name);
+                cmd.Parameters.AddWithValue("password", pass.TrimEnd());
+                SqlDataReader reader = cmd.ExecuteReader();
+                //password = Convert.ToInt32(Console.ReadLine());
+
+                if (reader.HasRows)
+                {
+                    Console.WriteLine("\nYour are logged successfully");
+                    //break;
+                    int choice;
+                    char ch;
+                    Class1.createconnection();
+                    do
+                    {
+                        Console.WriteLine("\n------TASK _YOU_WANT_PERFORM------");
+                        Console.WriteLine("\n1.Print All Employee");
+                        Console.WriteLine("\n2.Insert Employee");
+                        Console.WriteLine("\n3.Serach Employee Based On EID");
+                        Console.WriteLine("\n4.Print Department based on deptno");
+                        Console.WriteLine("\n5.Insert Departments");
+                        Console.WriteLine("\n6.Update Departments");
+                        Console.WriteLine("\n7.Delete Employee ");
+                        Console.WriteLine("\nEnter your choice");
+                        choice = Convert.ToInt32(Console.ReadLine());
+
+                        switch (choice)
+                        {
+                            case 1:
+
+                                Class1.PrintemployeeData();
+                                break;
+
+                            case 2:
+                                Console.WriteLine("Enter employee details");
+                                int eid = Convert.ToInt32(Console.ReadLine());
+                                string ename = Console.ReadLine();
+                                int salary = Convert.ToInt32(Console.ReadLine());
+                                string designation = Console.ReadLine();
+                                int deptno = Convert.ToInt32(Console.ReadLine());
+                                int contact_no = Convert.ToInt32(Console.ReadLine());
+                                string email = Console.ReadLine();
+                                
+                                Class1.Insertemployee(eid, ename, salary, designation, deptno, contact_no, email);
+                                break;
+
+                            case 3:
+                                Console.WriteLine("Enter the EID which data you want serach");
+                                int eid2 = Convert.ToInt32(Console.ReadLine());
+                                Class1.Getempusingeid(eid2);
+                                
+                                break;
+                            case 4:
+                                Console.WriteLine("Enter department no to view details");
+                                int Deptno = Convert.ToInt32(Console.ReadLine());
+                                Class1.GetDepartmentUsingDno(Deptno);
+                                break;
+
+                            case 5:
+
+                                Console.WriteLine("Enter Department Details HOD,location,deptno");
+                                //int eid1 = Convert.ToInt32(Console.ReadLine());
+                                string HOD = Console.ReadLine();
+                                string loction = Console.ReadLine();
+                                int deptno1 = Convert.ToInt32(Console.ReadLine());
+                                if (loction == "Mumbai" || loction == "Pune")
+                                {
+                                    Class1.InsertDepartment1(HOD, loction, deptno1);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid location ");
+                                }
+                                break;
+                            case 6:
+
+                                Console.WriteLine("Enter the deptno which record you want update");
+                               // eid = Convert.ToInt32(Console.ReadLine());
+                                deptno = Convert.ToInt32(Console.ReadLine());
+                                HOD = Console.ReadLine();
+                                loction = Console.ReadLine();
+                                deptno = Convert.ToInt32(Console.ReadLine());
+                                Class1.UpdateDepartment(HOD, loction, deptno);
+                                break;
+
+
+                            case 7:
+
+                                Console.WriteLine("Enter EID which record you want to delete");
+                                deptno = Convert.ToInt32(Console.ReadLine());
+                                Class1.DeleteDepartment(deptno);
+                                break;
+
+
+                            default:
+                                Console.WriteLine("Invalid Case");
+                                break;
+                        }
+
+                        Console.WriteLine("\n\nEnter y r Y to continue");
+                        ch = Convert.ToChar(Console.ReadLine());
+
+                    }
+                    while (ch == 'Y' || ch == 'y');
+                    Console.ReadLine();
+                    Console.Read();
+
                 }
+
+
                 else
                 {
-                    Console.WriteLine("Invaid crendentials");
+                    Console.WriteLine("\nInvaid crendentials");
                     continue;
 
                 }
             }
-                
-            int choice;
-            char ch;
-            Class1.createconnection();
-            do
-            {
-                Console.WriteLine("Menu");
-                Console.WriteLine("1.Print All Departments");
-                Console.WriteLine("2.Print Department based on deptno");
-                Console.WriteLine("3.Insert Departments");
-                Console.WriteLine("4.Update Departments");
-                Console.WriteLine("5.Delete Departments");
-                Console.WriteLine("Enter your choice");
-                choice = Convert.ToInt32(Console.ReadLine());
-
-               switch (choice)
-                {
-                    case 1:
-
-                        Class1.PrintemployeeData();
-                        break;
-
-                    case 2:
-                        Console.WriteLine("Enter department no to view details");
-                        int Deptno = Convert.ToInt32(Console.ReadLine());
-                        Class1.GetDepartmentUsingDno(Deptno);
-                        break;
-                    
-                    case 3:
-
-                        Console.WriteLine("Enter Department Details to Enter Deptno,dname,location,department head");
-                        int eid = Convert.ToInt32(Console.ReadLine());
-                        string HOD = Console.ReadLine();
-                        string location = Console.ReadLine();
-                        int deptno =Convert.ToInt32(Console.ReadLine());
-                        Class1.InsertDepartment(eid,HOD,loction,deptno);                                               
-                        break;
-/*
-                    case 4:
-                        Department d3 = new Department();
-                        Console.WriteLine("Enter Department Details to Update Deptno,dname,location,department head");
-                        d3.Deptno = Convert.ToInt32(Console.ReadLine());
-                        d3.Dname = Console.ReadLine();
-                        d3.location = Console.ReadLine();
-                        d3.dhead = Console.ReadLine();
-                        d3.UpdateDepartment();
-                        break;
-
-                    case 5:
-                        Department d4 = new Department();
-                        Console.WriteLine("Enter Department no to delete");
-                        d4.Deptno = Convert.ToInt32(Console.ReadLine());
-                        d4.DeleteDepartment();
-                        break;
-                       */
-
-                    default:
-                        Console.WriteLine("Invalid Case");
-                        break;
-                }
-
-                Console.WriteLine("Enter y r Y to continue");
-                ch = Convert.ToChar(Console.ReadLine());
-
-            }
-            while (ch == 'Y' || ch == 'y');
-            Console.ReadLine();
-            Console.Read();
-
+                                    
         }
     }
 }
