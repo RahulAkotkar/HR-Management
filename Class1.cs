@@ -33,10 +33,10 @@ namespace HRfuctions
             DataSet ds = new DataSet();
             adapter.Fill(ds);
             DataTable tab = ds.Tables[0];
-            Console.WriteLine("eid\tename\tsalary\tdesignation\tdept_no\tcontact_no\temail");
+            Console.WriteLine("eid\tename\tsalary\tdesignation\tdept_no\t\tcontact_no\temail");
             foreach (DataRow row in tab.Rows)
             {
-                Console.WriteLine(row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t\t\t" + row[4] + "\t" + row[5] + "\t" + row[6]);
+                Console.WriteLine("\n"+row[0] + "\t" + row[1] + "\t" + row[2] + "\t" + row[3] + "\t\t" + row[4] + "\t\t" + row[5] + "\t" + row[6]);
 
             }
             con.Close();
@@ -78,6 +78,35 @@ namespace HRfuctions
             // return no;
  
         }
+
+        public static void Getempusingeid(int eid)
+        {
+            SqlDataReader reader1 = null;
+            try
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("Getempusing_eid", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                SqlParameter param = new SqlParameter("eid", eid);
+                cmd.Parameters.Add(param);
+
+                reader1 = cmd.ExecuteReader();
+
+                while (reader1.Read())
+                {
+                    Console.WriteLine(reader1[0] + "\t" + reader1[1] + "\t" + reader1[2] + "\t" + reader1[3] + "\t" + reader1[4] + "\t" + reader1[5] + "\t" + reader1[6]);
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine("Exception " + ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
         public static void GetDepartmentUsingDno(int deptno)
         {
             SqlDataReader reader = null;
@@ -94,7 +123,7 @@ namespace HRfuctions
 
                 while (reader.Read())
                 {
-                    Console.WriteLine(reader[0] + "\t" + reader[1] + "\t" + reader[2] + "\t" + reader[3]);
+                    Console.WriteLine(reader[0] + "\t" + reader[1] + "\t" + reader[2] );
                 }
 
 
@@ -111,7 +140,7 @@ namespace HRfuctions
         }
 
 
-        public static void InsertDepartment1(int eid1, string HOD, string loction, int deptno1)
+        public static void InsertDepartment1(string HOD, string loction, int deptno1)
         {
             int no = 0;
             try
@@ -120,7 +149,7 @@ namespace HRfuctions
                 SqlCommand cmd = new SqlCommand("Insert_Department1", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("eid", eid1);
+                //cmd.Parameters.AddWithValue("eid", eid1);
                 cmd.Parameters.AddWithValue("HOD", HOD);
                 cmd.Parameters.AddWithValue("loction", loction);
                 cmd.Parameters.AddWithValue("deptno", deptno1);
@@ -142,7 +171,7 @@ namespace HRfuctions
 
         }
 
-        public static void UpdateDepartment(int eid,string HOD,string loction,int deptno)
+        public static void UpdateDepartment(string HOD,string loction,int deptno)
         {
             int no = 0;
             try
@@ -153,7 +182,7 @@ namespace HRfuctions
                 SqlCommand cmd = new SqlCommand("Update_Department", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("eid",eid);
+                //cmd.Parameters.AddWithValue("eid",eid);
                 cmd.Parameters.AddWithValue("HOD",HOD);
                cmd.Parameters.AddWithValue("loction", loction);
                 cmd.Parameters.AddWithValue("deptno",deptno);
@@ -173,7 +202,7 @@ namespace HRfuctions
             //return no;
         }
 
-         public static int DeleteDepartment(int deptno)
+         public static int DeleteDepartment(int eid)
         {
             int no = 0;
             try
@@ -183,8 +212,9 @@ namespace HRfuctions
                 SqlCommand cmd = new SqlCommand("Delete_Department", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.AddWithValue("deptno", deptno);
+                cmd.Parameters.AddWithValue("eid",eid);
                 no = cmd.ExecuteNonQuery();
+                Console.WriteLine("\n Employee deleted succsefully");
                 con.Close();
 
             }
